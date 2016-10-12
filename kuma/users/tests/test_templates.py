@@ -30,17 +30,6 @@ class SignupTests(UserTestCase, SocialTestMixin):
         'Terms',
         'Privacy Notice')
 
-    def test_signup_page_persona(self):
-        response = self.persona_login()
-        self.assertNotContains(response, 'Sign In Failure')
-        self.assertContains(response, 'Profile Creation Disabled')
-        self.assertContains(response,
-                            'We are sorry, but you can not create a profile'
-                            ' with Persona.')
-        session = response.context['request'].session
-        self.assertNotIn('socialaccount_sociallogin', session)
-        self.assertNotIn('sociallogin_provider', session)
-
     def test_signup_page_github(self):
         response = self.github_login()
         self.assertNotContains(response, 'Sign In Failure')
