@@ -354,7 +354,6 @@ LANGUAGE_URL_IGNORED_PATHS = (
     '@api',
     '__debug__',
     '.well-known',
-    'users/persona/',
     'users/github/login/callback/',
 )
 
@@ -467,7 +466,6 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
-    'kuma.users.providers.persona',
     'kuma.users.providers.github',
 
     # util
@@ -1206,7 +1204,7 @@ CONSTANCE_CONFIG = dict(
             "Extensions", "Firefox", "Firefox OS", "Games",
             "Gecko", "Graphics", "Internationalization", "History", "HTML", "HTTP", "JavaScript", "Layout",
             "Localization", "MDN", "Mobile", "Mozilla",
-            "Networking", "Persona", "Places", "Plugins", "Protocols",
+            "Networking", "Places", "Plugins", "Protocols",
 
             "Reference", "Tutorial", "Landing",
 
