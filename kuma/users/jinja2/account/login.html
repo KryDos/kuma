@@ -23,7 +23,7 @@
       {% endtrans %}</p>
 
       {% if socialaccount_providers  %}
-          {% with process="connect" %}
+          {% with process="login" %}
             {% include "socialaccount/snippets/provider_list.html" %}
           {% endwith %}
       {% endif %}
