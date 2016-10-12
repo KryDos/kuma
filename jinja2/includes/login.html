@@ -4,7 +4,7 @@
         <a href="{{ url('account_logout') }}?next={{ next_url }}">{{ _('Sign out') }}</a>
     {% else %}
       {% set github_url = provider_login_url('github', next=next_url) %}
-       <a href="{{ github_url }}" class="login-link" data-service="GitHub">
+       <a href="{{ github_url }}" class="login-link js-login-link" data-service="GitHub">
         {{ _('Sign in') }}
         <i class="icon-github" aria-hidden="true"></i>
       </a>

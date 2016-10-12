@@ -25,14 +25,7 @@
         };
 
         // Track clicks on all login launching links
-        $('.login-link').on('click', trackingCallback);
-
-        // Ensure the login widget GitHub icon as clickable elements
-        $container.find('.oauth-github').on('click', function(e) {
-            e.stopPropagation();
-            trackingCallback.apply(this, arguments);
-            win.location = $(this).data('href');
-        });
+        $('.js-login-link').on('click', trackingCallback);
     })();
 
     // Track users successfully logging in

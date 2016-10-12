@@ -26,6 +26,8 @@ PROTOCOL = 'https://'
 DOMAIN = 'developer-local.allizom.org'
 SITE_URL = PROTOCOL + DOMAIN
 
+SOCIALACCOUNT_PROVIDERS['persona']['AUDIENCE'] = SITE_URL
+
 # Elasticsearch related settings.
 ES_DEFAULT_NUM_REPLICAS = 0
 ES_DEFAULT_NUM_SHARDS = 1

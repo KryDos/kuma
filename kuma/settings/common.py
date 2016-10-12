@@ -466,6 +466,7 @@ INSTALLED_APPS = (
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
+    'kuma.users.providers.persona',
     'kuma.users.providers.github',
 
     # util
@@ -1361,7 +1362,16 @@ SOCIALACCOUNT_EMAIL_REQUIRED = True
 SOCIALACCOUNT_AUTO_SIGNUP = False  # forces the use of the signup view
 SOCIALACCOUNT_QUERY_EMAIL = True  # used by the custom github provider
 SOCIALACCOUNT_PROVIDERS = {
+    'persona': {
+        'AUDIENCE': 'https://developer.mozilla.org',
+        'REQUEST_PARAMETERS': {
+            'siteName': 'Mozilla Developer Network',
+            'siteLogo': STATIC_URL + 'img/opengraph-logo.png',
+        }
+    }
 }
+PERSONA_VERIFIER_URL = 'https://verifier.login.persona.org/verify'
+PERSONA_INCLUDE_URL = 'https://login.persona.org/include.js'
 
 HONEYPOT_FIELD_NAME = 'website'
 
