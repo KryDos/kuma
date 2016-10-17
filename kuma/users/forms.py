@@ -1,5 +1,8 @@
+from allauth.socialaccount.forms import DisconnectForm
+from allauth.socialaccount.models import SocialAccount
 from django import forms
 from django.conf import settings
+from django.template.loader import render_to_string
 from django.utils.translation import ugettext_lazy as _
 from sundial.forms import TimezoneChoiceField
 from sundial.zones import COMMON_GROUPED_CHOICES
@@ -9,6 +12,7 @@ from taggit.utils import parse_tags
 from .constants import (USERNAME_CHARACTERS, USERNAME_LEGACY_REGEX,
                         USERNAME_REGEX)
 from .models import User
+from .tasks import send_recovery_email
 
 
 class UserBanForm(forms.Form):
@@ -150,3 +154,30 @@ class UserEditForm(forms.ModelForm):
                             .exists()):
             raise forms.ValidationError(_('Username already in use.'))
         return new_username
+
+
+class UserRecoveryEmailForm(forms.Form):
+    """
+    Send email(s) with an account recovery link.
+
+    Modeled after django.contrib.auth.forms.PasswordResetForm
+    """
+    email = forms.EmailField(label=_("Email"), max_length=254)
+
+    def save(self, request):
+        """
+        Send email(s) with an account recovery link.
+        """
+        email = self.cleaned_data["email"]
+        users = User.objects.filter(email__iexact=email, is_active=True)
+        for user in users:
+            send_recovery_email(user.pk, request.LANGUAGE_CODE)
+
+
+class DisconnectOmitPersonaForm(DisconnectForm):
+    def __init__(self, *args, **kwargs):
+        self.request = kwargs.pop('request')
+        self.accounts = SocialAccount.objects.filter(
+            user=self.request.user).exclude(provider='persona')
+        super(forms.Form, self).__init__(*args, **kwargs)
+        self.fields['account'].queryset = self.accounts
