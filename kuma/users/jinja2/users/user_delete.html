@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% from 'includes/common_macros.html' import li_field %}
+
+{% set delete_user = request.user %}
+{% set is_me = user.pk == delete_user.pk %}
+
+{% block body_attributes %}{% endblock %}
+
+{% block bodyclass %}user user-delete{% endblock %}
+
+{% block title %}{{ page_title(_('Delete your profile')) }}{% endblock %}
+
+{% block site_css %}
+  {{ super() }}
+{% endblock %}
+
+{% block site_js %}
+  {{ super() }}
+{% endblock %}
+
+{% block content %}
+
+    <div class="text-content readable-line-length">
+
+        <h1>Delete your profile</h1>
+
+        <p>{{ _('We\'re sorry to see you go.') }}</p>
+
+        <p>
+        {% trans %}
+        Deleting accounts is complicated because of our content licensing requirements. So, we need users who want to delete their accounts to file a bug so we can discuss the options with them.
+        {% endtrans %}
+        </p>
+
+        {% set encoded_username = delete_user.username | urlencode %}
+        <a href="https://bugzilla.mozilla.org/enter_bug.cgi?assigned_to=nobody%40mozilla.org&bug_file_loc=http%3A%2F%2F&bug_ignored=0&bug_severity=normal&bug_status=NEW&cf_fx_iteration=---&cf_fx_points=---&comment=Please%20delete%20my%20MDN%20account.%20My%20username%20is%3A%0D%0A%0D%0A{{ encoded_username }}&component=User%20management&contenttypemethod=autodetect&contenttypeselection=text%2Fplain&defined_groups=1&flag_type-4=X&flag_type-607=X&flag_type-791=X&flag_type-800=X&flag_type-803=X&form_name=enter_bug&maketemplate=Remember%20values%20as%20bookmarkable%20template&op_sys=All&priority=--&product=Mozilla%20Developer%20Network&rep_platform=All&short_desc=Account%20deletion%20request%20for%20{{ encoded_username }}&status_whiteboard=[account-mod]&target_milestone=---&version=unspecified&format=__standard__">{{ _('File a bug to close your account.') }}</a>
+
+    </div>
+
+{% endblock %}
