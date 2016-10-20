@@ -58,8 +58,8 @@ class KumaSocialAccountAdapterTestCase(UserTestCase):
 
         # Set up an un-matching alternate SocialLogin for request
         other_account = SocialAccount(user=self.user_model(),
-                                        provider='other',
-                                        uid='noone@inexistant.com')
+                                      provider='other',
+                                      uid='noone@inexistant.com')
         other_login = SocialLogin(account=other_account)
 
         self.assertRaises(ImmediateHttpResponse,
