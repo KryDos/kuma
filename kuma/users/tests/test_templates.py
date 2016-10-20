@@ -174,21 +174,10 @@ class AllauthGitHubTestCase(UserTestCase, SocialTestMixin):
         signout_url = urlparams(logout_url, next=home_url)
         parsed = pq(response.content)
 
-        login_info = parsed.find('.oauth-logged-in')
-        assert len(login_info.children())
-
-        signed_in_message = login_info.children()[0]
-        assert 'title' in signed_in_message.attrib
-        assert signed_in_message.attrib['title'] == 'Signed in with GitHub'
-
-        auth_links = login_info.children()[1].getchildren()
-        assert len(auth_links)
-
-        user_link = auth_links[0].getchildren()[0]
+        login_info = parsed.find('.login')
+        user_link, signout_link = login_info.children()
         assert user_link.attrib['href'] == user_url
-
-        signout_link = auth_links[1].getchildren()[0]
-        expected = signout_url.replace('%2F', '/')  # urlparams() encodes slashes
+        expected = signout_url.replace('%2F', '/')  # decode slashes
         assert signout_link.attrib['href'] == expected
 
     def test_signin_form_present(self):
@@ -231,19 +220,9 @@ class AllauthGitHubTestCase(UserTestCase, SocialTestMixin):
         signout_url = urlparams(logout_url, next=home_url)
         parsed = pq(response.content)
 
-        login_info = parsed.find('.oauth-logged-in')
-        assert len(login_info.children())
-
-        signed_in_message = login_info.children()[0]
-        assert signed_in_message.attrib['title'] == 'Signed in with GitHub'
-
-        auth_links = login_info.children()[1].getchildren()
-        assert len(auth_links)
-
-        user_link = auth_links[0].getchildren()[0]
+        login_info = parsed.find('.login')
+        user_link, signout_link = login_info.children()
         assert user_link.attrib['href'] == user_url
-
-        signout_link = auth_links[1].getchildren()[0]
         expected = signout_url.replace('%2F', '/')
         assert signout_link.attrib['href'] == expected
 
