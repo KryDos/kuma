@@ -16,6 +16,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model, login
 from django.contrib.auth.decorators import permission_required
 from django.contrib.auth.models import Group
+from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.db import IntegrityError, transaction
 from django.db.models import Q
@@ -623,18 +624,16 @@ def recover(request, uidb64=None, token=None):
         user = UserModel._default_manager.get(pk=uid)
     except (TypeError, ValueError, OverflowError, UserModel.DoesNotExist):
         user = None
-    if user:
+    if user and default_token_generator.check_token(user, token):
         temp_pwd = uuid.uuid4().hex
         user.set_password(temp_pwd)
         user.save()
         user = authenticate(username=user.username, password=temp_pwd)
-    if user:
         user.set_unusable_password()
         user.save()
         login(request, user)
         return redirect('users.recover_done')
-    else:
-        return render(request, 'users/recover_failed.html')
+    return render(request, 'users/recover_failed.html')
 
 
 recovery_email_sent = TemplateView.as_view(

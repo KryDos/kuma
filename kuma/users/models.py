@@ -203,11 +203,17 @@ class User(AbstractUser):
     def get_recovery_url(self):
         """
         Creates a recovery URL for the user.
+
+        The recovery URL uses the password reset workflow, which requires the
+        user has a password on their account.  Users without a password get a
+        randomly generated password.
         """
         if not self.has_usable_password():
             self.set_password(uuid.uuid4().hex)
+            self.save()
         uidb64 = urlsafe_base64_encode(force_bytes(self.pk))
         token = default_token_generator.make_token(self)
         link = reverse('users.recover',
-                       kwargs={'token': token, 'uidb64': uidb64})
+                       kwargs={'token': token, 'uidb64': uidb64},
+                       force_locale=True)
         return link
