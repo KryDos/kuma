@@ -1,5 +1,3 @@
-from allauth.socialaccount.forms import DisconnectForm
-from allauth.socialaccount.models import SocialAccount
 from django import forms
 from django.conf import settings
 from django.utils.translation import ugettext_lazy as _
@@ -171,12 +169,3 @@ class UserRecoveryEmailForm(forms.Form):
         users = User.objects.filter(email__iexact=email, is_active=True)
         for user in users:
             send_recovery_email(user.pk, request.LANGUAGE_CODE)
-
-
-class DisconnectOmitPersonaForm(DisconnectForm):
-    def __init__(self, *args, **kwargs):
-        self.request = kwargs.pop('request')
-        self.accounts = SocialAccount.objects.filter(
-            user=self.request.user).exclude(provider='persona')
-        super(forms.Form, self).__init__(*args, **kwargs)
-        self.fields['account'].queryset = self.accounts

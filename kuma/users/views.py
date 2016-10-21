@@ -35,8 +35,7 @@ from kuma.core.decorators import login_required, never_cache
 from kuma.wiki.forms import RevisionAkismetSubmissionSpamForm
 from kuma.wiki.models import Document, DocumentDeletionLog, Revision, RevisionAkismetSubmission
 
-from .forms import (DisconnectOmitPersonaForm, UserBanForm, UserEditForm,
-                    UserRecoveryEmailForm)
+from .forms import UserBanForm, UserEditForm, UserRecoveryEmailForm
 from .models import User, UserBan
 # we have to import the signup form here due to allauth's odd form subclassing
 # that requires providing a base form class (see ACCOUNT_SIGNUP_FORM_CLASS)
@@ -641,5 +640,4 @@ recovery_email_sent = TemplateView.as_view(
 
 
 recover_done = login_required(never_cache(ConnectionsView.as_view(
-    form_class=DisconnectOmitPersonaForm,
     template_name='users/recover_done.html')))
