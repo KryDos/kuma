@@ -22,6 +22,20 @@ WELCOME_EMAIL_STRINGS = [
 
 
 @transaction_task
+def send_recovery_email(user_pk, locale=None):
+    user = get_user_model().objects.get(pk=user_pk)
+    locale = locale or settings.WIKI_DEFAULT_LANGUAGE
+    url = settings.SITE_URL + user.get_recovery_url()
+    context = {'recovery_url': url, 'username': user.username}
+    with translation.override(locale):
+        subject = render_email('users/email/recovery/subject.ltxt', context)
+        # Email subject *must not* contain newlines
+        subject = ''.join(subject.splitlines())
+        plain = render_email('users/email/recovery/plain.ltxt', context)
+        send_mail(subject, plain, settings.DEFAULT_FROM_EMAIL, [user.email])
+
+
+@transaction_task
 def send_welcome_email(user_pk, locale):
     user = get_user_model().objects.get(pk=user_pk)
     if (locale == settings.WIKI_DEFAULT_LANGUAGE or
@@ -42,17 +56,3 @@ def send_welcome_email(user_pk, locale):
             )
             email.attach_alternative(content_html, 'text/html')
             email.send()
-
-
-@transaction_task
-def send_recovery_email(user_pk, locale=None):
-    user = get_user_model().objects.get(pk=user_pk)
-    locale = locale or settings.WIKI_DEFAULT_LANGUAGE
-    url = settings.SITE_URL + user.get_recovery_url()
-    context = {'recovery_url': url, 'username': user.username}
-    with translation.override(locale):
-        subject = render_email('users/email/recovery/subject.ltxt', context)
-        # Email subject *must not* contain newlines
-        subject = ''.join(subject.splitlines())
-        plain = render_email('users/email/recovery/plain.ltxt', context)
-        send_mail(subject, plain, settings.DEFAULT_FROM_EMAIL, [user.email])

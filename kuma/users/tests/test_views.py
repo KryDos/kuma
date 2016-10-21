@@ -1253,6 +1253,29 @@ class KumaGitHubTests(UserTestCase, SocialTestMixin):
         self.assertEqual(refresh_token, social_token.token_secret)
 
 
+class UserDeleteTests(KumaTestCase):
+    def test_missing_user_is_missing(self):
+        assert not User.objects.filter(username='missing').exists()
+        url = reverse('users.user_delete', kwargs={'username': 'missing'})
+        response = self.client.get(url, follow=True)
+        assert response.status_code == 404
+
+    def test_wrong_user_is_forbidden(self):
+        assert user(username='right', save=True)
+        assert user(username='wrong', password='wrong', save=True)
+        self.client.login(username='wrong', password='wrong')
+        url = reverse('users.user_delete', kwargs={'username': 'right'})
+        response = self.client.get(url, follow=True)
+        assert response.status_code == 403
+
+    def test_right_user_is_ok(self):
+        assert user(username='user', password='password', save=True)
+        self.client.login(username='user', password='password')
+        url = reverse('users.user_delete', kwargs={'username': 'user'})
+        response = self.client.get(url, follow=True)
+        assert response.status_code == 200
+
+
 class SendRecoveryEmailTests(KumaTestCase):
     def test_send_email(self):
         url = reverse('users.send_recovery_email', force_locale=True)
